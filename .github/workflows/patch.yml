@@ -1,0 +1,43 @@
+name: patch
+on:
+  watch:
+    types: [started]
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.0
+        with:
+          repository: vuejs/vue-next
+          path: vue-next
+          ref: v3.2.21
+      - name: Setup node.js
+        uses: actions/setup-node@v2.4.1
+        with:
+          node-version: 16
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6.20.3
+      - name: Installing...
+        run: |
+          cd vue-next
+          pnpm install --no-frozen-lockfile
+      - name: Patching...
+        run: |
+          cd vue-next/packages/runtime-core/src/components
+          sed -i '241 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry\n' KeepAlive.ts
+          sed -n '235,249p' KeepAlive.ts
+      - name: Building...
+        run: |
+          cd vue-next && pnpm run build runtime-core && cd ..
+          mkdir package && cd package && npm init -y && npm install @vue/runtime-core@3.2.21 && cd ..
+          cp vue-next/packages/runtime-core/dist/* package/node_modules/@vue/runtime-core/dist/
+          cd package/node_modules/@vue && tar -zcvf runtime-core.tar.gz runtime-core/*
+      - name: Uploading...
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: runtime-core.tar.gz
+          path: package/node_modules/@vue/runtime-core.tar.gz
