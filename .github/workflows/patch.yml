@@ -12,9 +12,9 @@ jobs:
         with:
           repository: vuejs/vue-next
           path: vue-next
-          ref: v3.2.21
+          ref: v3.2.26
       - name: Setup node.js
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: 16
       - name: Setup pnpm
@@ -33,11 +33,11 @@ jobs:
       - name: Building...
         run: |
           cd vue-next && pnpm run build runtime-core && cd ..
-          mkdir package && cd package && npm init -y && npm install @vue/runtime-core@3.2.21 && cd ..
+          mkdir package && cd package && npm init -y && npm install @vue/runtime-core@3.2.26 && cd ..
           cp vue-next/packages/runtime-core/dist/* package/node_modules/@vue/runtime-core/dist/
           cd package/node_modules/@vue && tar -zcvf runtime-core.tar.gz runtime-core/*
       - name: Uploading...
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.1
         with:
           name: runtime-core.tar.gz
           path: package/node_modules/@vue/runtime-core.tar.gz
