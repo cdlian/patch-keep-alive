@@ -28,7 +28,7 @@ jobs:
       - name: Patching...
         run: |
           cd vue-next/packages/runtime-core/src/components
-          sed -i '241 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry\n' KeepAlive.ts
+          sed -i '241 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry' KeepAlive.ts
           sed -n '235,249p' KeepAlive.ts
       - name: Building...
         run: |
