@@ -8,36 +8,36 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v2.4.2
         with:
-          repository: vuejs/vue-next
-          path: vue-next
-          ref: v3.2.26
-      - name: Setup node.js
-        uses: actions/setup-node@v2.5.1
+          repository: vuejs/core
+          path: source
+          ref: v3.2.38
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.4.1
         with:
-          node-version: 16
+          node-version: 18
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2.2.2
         with:
-          version: 6.20.3
+          version: latest
       - name: Installing...
         run: |
-          cd vue-next
+          cd source
           pnpm install --no-frozen-lockfile
       - name: Patching...
         run: |
-          cd vue-next/packages/runtime-core/src/components
-          sed -i '241 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry' KeepAlive.ts
-          sed -n '235,249p' KeepAlive.ts
+          cd source/packages/runtime-core/src/components
+          sed -i '245 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry' KeepAlive.ts
+          sed -n '242,250p' KeepAlive.ts
       - name: Building...
         run: |
-          cd vue-next && pnpm run build runtime-core && cd ..
-          mkdir package && cd package && npm init -y && npm install @vue/runtime-core@3.2.26 && cd ..
-          cp vue-next/packages/runtime-core/dist/* package/node_modules/@vue/runtime-core/dist/
+          cd source && pnpm run build runtime-core && cd ..
+          mkdir package && cd package && npm init -y && npm install @vue/runtime-core@3.2.38 && cd ..
+          cp source/packages/runtime-core/dist/* package/node_modules/@vue/runtime-core/dist/
           cd package/node_modules/@vue && tar -zcvf runtime-core.tar.gz runtime-core/*
       - name: Uploading...
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3.1.0
         with:
           name: runtime-core.tar.gz
           path: package/node_modules/@vue/runtime-core.tar.gz
