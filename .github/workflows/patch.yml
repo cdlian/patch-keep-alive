@@ -29,7 +29,7 @@ jobs:
         run: |
           cd source/packages/runtime-core/src/components
           sed -i '245 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry' KeepAlive.ts
-          sed -n '242,250p' KeepAlive.ts
+          sed -n '243,250p' KeepAlive.ts
       - name: Building...
         run: |
           cd source && pnpm run build runtime-core && cd ..
