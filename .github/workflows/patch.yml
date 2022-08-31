@@ -30,7 +30,8 @@ jobs:
           cd source/packages/runtime-core/src/components
           sed -i '194 a\      if (!cached) return' KeepAlive.ts
           sed -i '246 a\      ;(instance as any).pruneCacheEntry = pruneCacheEntry' KeepAlive.ts
-          sed -n '245,251p' KeepAlive.ts
+          sed -n '193,205p' KeepAlive.ts
+          sed -n '246,252p' KeepAlive.ts
       - name: Building...
         run: |
           cd source && pnpm run build runtime-core && cd ..
